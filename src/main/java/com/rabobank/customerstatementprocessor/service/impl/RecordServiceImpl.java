@@ -3,6 +3,7 @@ package com.rabobank.customerstatementprocessor.service.impl;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,35 +32,28 @@ public class RecordServiceImpl implements RecordService {
 
 		boolean balanceCheck = new DecimalFormat("#.##").format(sum).equals(endBal);
 		
-		Record existRecord = recordRepository.getRecord(record.getTransactionReference());
+		Optional<Record> rec = recordRepository.getRecord(record.getTransactionReference());
+		Record existRecord = rec.orElse(null);
 
 		if (null != existRecord) {
-			// Duplicate Reference & Correct Balance
 			result = AppConstants.DUPLICATE_REFERENCE;
 			errorRecordList.add(new ErrorRecord(record.getTransactionReference(), record.getAccountNumber()));
 
 			if (!balanceCheck) {
-				// Duplicate Reference & InCorrect Balance
 				result = AppConstants.DUPLICATE_REFERENCE_INCORRECT_END_BALANCE;
 				errorRecordList.add(new ErrorRecord(record.getTransactionReference(), record.getAccountNumber()));
 			}
 		} else {
-
 			if (balanceCheck) {
-				// No Duplicate Reference No Incorrect Balance
 				result = AppConstants.SUCCESSFUL;
 				recordRepository.saveRecord(record);
 			} else {
-				// No Duplicate Reference But Incorrect Balance
 				result = AppConstants.INCORRECT_END_BALANCE;
 				errorRecordList.add(new ErrorRecord(record.getTransactionReference(), record.getAccountNumber()));
 			}
-
 		}
-
 		recordResponse.setResult(result);
 		recordResponse.setErrorRecords(errorRecordList);
-
 		return recordResponse;
 	}
 

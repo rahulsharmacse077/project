@@ -33,8 +33,7 @@ Secondly, if the reference is not present. Then we again have 2 scenarios.
 	"result" : "Successfull",
     "errorRecord": []
 	
-Running of the application
---------------------------
+Running of the application.
 
 In order to run the application, we need to maven clean install the source. So, using the command below:
 

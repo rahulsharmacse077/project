@@ -2,6 +2,7 @@ package com.rabobank.customerstatementprocessor.dao.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -14,15 +15,11 @@ public class RecordRepositoryImpl implements RecordRepository {
 	private Map<Integer, Record> recordMap;
 
 	@Override
-	public Record getRecord(int transactionReference) {
+	public Optional<Record> getRecord(int transactionReference) {
 		if (recordMap == null) {
 			recordMap = new HashMap<>();
 		}
-		
-		if(recordMap.containsKey(transactionReference)) {
-			return recordMap.get(transactionReference);
-		}
-		return null;
+		return Optional.ofNullable(recordMap.get(transactionReference));
 	}
 	
 	@Override
@@ -31,6 +28,10 @@ public class RecordRepositoryImpl implements RecordRepository {
 			recordMap = new HashMap<>();
 		}
 		recordMap.put(record.getTransactionReference(), record);
+	}
+	
+	public Map<Integer, Record> getRecords(){
+		return recordMap;
 	}
  
 

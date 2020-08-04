@@ -1,10 +1,12 @@
 package com.rabobank.customerstatementprocessor.dao;
 
+import java.util.Optional;
+
 import com.rabobank.customerstatementprocessor.model.Record;
 
 public interface RecordRepository {
 
-	Record getRecord(int transactionReference);
+	Optional<Record> getRecord(int transactionReference);
 
 	void saveRecord(Record record);
 
